@@ -12,6 +12,7 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Targets;
+import soot.options.Options;
 
 public class CallGraphTest {
 
@@ -31,7 +32,8 @@ public class CallGraphTest {
 			protected void internalTransform(String arg0, Map arg1) {
 				Scene.v().loadNecessaryClasses();
 				Scene.v().loadDynamicClasses();
-				
+				Options.v().setPhaseOption("cg.cha", "on");
+				System.out.println(Scene.v().getCallGraph());
 				Scene.v().getClasses().forEach((cls)->{
 					cls.getMethods().forEach((mtd)->{
 						if(mtd.getName().equals("flowThrough")) {
@@ -45,9 +47,9 @@ public class CallGraphTest {
 		});
 		PackManager.v().getPack("wjtp").add(transform);
 		String targetDir = "targetsBin";
-		Main.main(new String[] { "-cp", targetDir, "-process-dir", targetDir, "-w",
+		Main.main(new String[] { "-pp", "-process-dir", targetDir, "-w",
 				 "-exclude", "javax",
-				"-p", "cg.spark", "verbose", "true", "-allow-phantom-refs",
+				"-allow-phantom-refs",
 				 "-no-bodies-for-excluded",
 				"-src-prec", "only-class", "-output-format", "J" });
 	}
