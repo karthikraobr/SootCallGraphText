@@ -1,0 +1,152 @@
+public class de.visuflow.reporting.EmptyReporter extends java.lang.Object implements de.visuflow.reporting.IReporter
+{
+
+    public void <init>()
+    {
+        de.visuflow.reporting.EmptyReporter r0;
+
+        r0 := @this: de.visuflow.reporting.EmptyReporter;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public void report(soot.SootMethod, soot.Unit)
+    {
+        de.visuflow.reporting.EmptyReporter r0;
+        soot.SootMethod r1;
+        soot.Unit r2;
+        java.lang.StringBuilder $r3, $r5, $r7, $r9;
+        java.io.PrintStream $r4, $r8;
+        java.lang.String $r6, $r10;
+
+        r0 := @this: de.visuflow.reporting.EmptyReporter;
+
+        r1 := @parameter0: soot.SootMethod;
+
+        r2 := @parameter1: soot.Unit;
+
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("Found a violation in method ");
+
+        $r5 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r1);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>($r6);
+
+        $r8 = <java.lang.System: java.io.PrintStream out>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("\tSink: ");
+
+        $r9 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r8.<java.io.PrintStream: void println(java.lang.String)>($r10);
+
+        return;
+    }
+
+    public void report(soot.SootMethod, soot.Unit, soot.Unit)
+    {
+        de.visuflow.reporting.EmptyReporter r0;
+        soot.SootMethod r1;
+        soot.Unit r2, r3;
+        java.lang.StringBuilder $r4, $r6, $r8, $r10, $r11, $r13, $r15, $r17, $r18, $r20;
+        java.io.PrintStream $r5, $r9, $r16;
+        java.lang.String $r7, $r12, $r14, $r19, $r21;
+
+        r0 := @this: de.visuflow.reporting.EmptyReporter;
+
+        r1 := @parameter0: soot.SootMethod;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: soot.Unit;
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Found a flow in method ");
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r1);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r9 = <java.lang.System: java.io.PrintStream out>;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("\tSource: ");
+
+        $r10 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" --- ");
+
+        $r12 = specialinvoke r0.<de.visuflow.reporting.EmptyReporter: java.lang.String getFqn(soot.Unit)>(r2);
+
+        $r13 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r14 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<java.io.PrintStream: void println(java.lang.String)>($r14);
+
+        $r16 = <java.lang.System: java.io.PrintStream out>;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>("\tSink: ");
+
+        $r17 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r3);
+
+        $r18 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" --- ");
+
+        $r19 = specialinvoke r0.<de.visuflow.reporting.EmptyReporter: java.lang.String getFqn(soot.Unit)>(r2);
+
+        $r20 = virtualinvoke $r18.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r19);
+
+        $r21 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r16.<java.io.PrintStream: void println(java.lang.String)>($r21);
+
+        return;
+    }
+
+    private java.lang.String getFqn(soot.Unit)
+    {
+        de.visuflow.reporting.EmptyReporter r0;
+        soot.Unit r1;
+        soot.tagkit.Tag r2;
+        java.lang.String $r3;
+        byte[] $r4;
+
+        r0 := @this: de.visuflow.reporting.EmptyReporter;
+
+        r1 := @parameter0: soot.Unit;
+
+        r2 = interfaceinvoke r1.<soot.Unit: soot.tagkit.Tag getTag(java.lang.String)>("Fully Qualified Name");
+
+        if r2 == null goto label1;
+
+        $r3 = new java.lang.String;
+
+        $r4 = interfaceinvoke r2.<soot.tagkit.Tag: byte[] getValue()>();
+
+        specialinvoke $r3.<java.lang.String: void <init>(byte[])>($r4);
+
+        return $r3;
+
+     label1:
+        return "FQN not available";
+    }
+}

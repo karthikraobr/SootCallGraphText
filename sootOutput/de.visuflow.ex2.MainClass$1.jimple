@@ -1,0 +1,48 @@
+class de.visuflow.ex2.MainClass$1 extends soot.BodyTransformer
+{
+    private final de.visuflow.reporting.IReporter val$reporter;
+
+    void <init>(de.visuflow.reporting.IReporter)
+    {
+        de.visuflow.ex2.MainClass$1 r0;
+        de.visuflow.reporting.IReporter r1;
+
+        r0 := @this: de.visuflow.ex2.MainClass$1;
+
+        r1 := @parameter0: de.visuflow.reporting.IReporter;
+
+        r0.<de.visuflow.ex2.MainClass$1: de.visuflow.reporting.IReporter val$reporter> = r1;
+
+        specialinvoke r0.<soot.BodyTransformer: void <init>()>();
+
+        return;
+    }
+
+    protected void internalTransform(soot.Body, java.lang.String, java.util.Map)
+    {
+        de.visuflow.ex2.MainClass$1 r0;
+        soot.Body r1;
+        java.lang.String r2;
+        java.util.Map r3;
+        de.visuflow.ex2.IntraproceduralAnalysis $r5;
+        de.visuflow.reporting.IReporter $r6;
+
+        r0 := @this: de.visuflow.ex2.MainClass$1;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: java.lang.String;
+
+        r3 := @parameter2: java.util.Map;
+
+        $r5 = new de.visuflow.ex2.IntraproceduralAnalysis;
+
+        $r6 = r0.<de.visuflow.ex2.MainClass$1: de.visuflow.reporting.IReporter val$reporter>;
+
+        specialinvoke $r5.<de.visuflow.ex2.IntraproceduralAnalysis: void <init>(soot.Body,de.visuflow.reporting.IReporter)>(r1, $r6);
+
+        virtualinvoke $r5.<de.visuflow.ex2.IntraproceduralAnalysis: void doAnalyis()>();
+
+        return;
+    }
+}

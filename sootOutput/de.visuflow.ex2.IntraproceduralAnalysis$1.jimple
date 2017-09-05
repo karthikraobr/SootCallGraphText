@@ -1,0 +1,44 @@
+class de.visuflow.ex2.IntraproceduralAnalysis$1 extends java.lang.Object implements soot.tagkit.Tag
+{
+    final de.visuflow.ex2.IntraproceduralAnalysis this$0;
+
+    void <init>(de.visuflow.ex2.IntraproceduralAnalysis)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis$1 r0;
+        de.visuflow.ex2.IntraproceduralAnalysis r1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis$1;
+
+        r1 := @parameter0: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r0.<de.visuflow.ex2.IntraproceduralAnalysis$1: de.visuflow.ex2.IntraproceduralAnalysis this$0> = r1;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public byte[] getValue() throws soot.tagkit.AttributeValueException
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis$1 r0;
+        java.lang.String $r1;
+        byte[] $r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis$1;
+
+        $r1 = "foobar";
+
+        $r2 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        return $r2;
+    }
+
+    public java.lang.String getName()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis$1 r0;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis$1;
+
+        return "visuflow.attrubte";
+    }
+}

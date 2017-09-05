@@ -1,0 +1,94 @@
+public class de.visuflow.ex2.MainClass extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        de.visuflow.ex2.MainClass r0;
+
+        r0 := @this: de.visuflow.ex2.MainClass;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        de.visuflow.reporting.EmptyReporter $r1;
+
+        r0 := @parameter0: java.lang.String[];
+
+        $r1 = new de.visuflow.reporting.EmptyReporter;
+
+        specialinvoke $r1.<de.visuflow.reporting.EmptyReporter: void <init>()>();
+
+        staticinvoke <de.visuflow.ex2.MainClass: void runAnalysis(de.visuflow.reporting.IReporter,int)>($r1, 3);
+
+        return;
+    }
+
+    public static void runAnalysis(de.visuflow.reporting.IReporter, int)
+    {
+        de.visuflow.reporting.IReporter r0;
+        int i0;
+        soot.PackManager $r5;
+        soot.Pack $r6;
+        java.lang.String[] $r7;
+        de.visuflow.ex2.MainClass$1 r8;
+        soot.Transform r9;
+        soot.Transformer r10;
+
+        r0 := @parameter0: de.visuflow.reporting.IReporter;
+
+        i0 := @parameter1: int;
+
+        staticinvoke <soot.G: void reset()>();
+
+        r9 = new soot.Transform;
+
+        r8 = new de.visuflow.ex2.MainClass$1;
+
+        specialinvoke r8.<de.visuflow.ex2.MainClass$1: void <init>(de.visuflow.reporting.IReporter)>(r0);
+
+        r10 = (soot.Transformer) r8;
+
+        specialinvoke r9.<soot.Transform: void <init>(java.lang.String,soot.Transformer)>("jtp.analysis", r10);
+
+        $r5 = staticinvoke <soot.PackManager: soot.PackManager v()>();
+
+        $r6 = virtualinvoke $r5.<soot.PackManager: soot.Pack getPack(java.lang.String)>("jtp");
+
+        virtualinvoke $r6.<soot.Pack: void add(soot.Transform)>(r9);
+
+        $r7 = newarray (java.lang.String)[12];
+
+        $r7[0] = "-pp";
+
+        $r7[1] = "-process-dir";
+
+        $r7[2] = "/home/henni/devel/pg/workspace-plugin/visuflow-workspace/TaintProject/bin/";
+
+        $r7[3] = "-w";
+
+        $r7[4] = "-exclude";
+
+        $r7[5] = "javax";
+
+        $r7[6] = "-allow-phantom-refs";
+
+        $r7[7] = "-no-bodies-for-excluded";
+
+        $r7[8] = "-src-prec";
+
+        $r7[9] = "class";
+
+        $r7[10] = "-output-format";
+
+        $r7[11] = "none";
+
+        staticinvoke <soot.Main: void main(java.lang.String[])>($r7);
+
+        return;
+    }
+}

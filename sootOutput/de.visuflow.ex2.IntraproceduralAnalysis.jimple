@@ -1,0 +1,973 @@
+public class de.visuflow.ex2.IntraproceduralAnalysis extends soot.toolkits.scalar.ForwardFlowAnalysis
+{
+    public int flowThroughCount;
+    private final soot.SootMethod method;
+    private final de.visuflow.reporting.IReporter reporter;
+
+    public void <init>(soot.Body, de.visuflow.reporting.IReporter)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        soot.Body r1;
+        de.visuflow.reporting.IReporter r2;
+        soot.toolkits.graph.ExceptionalUnitGraph $r3;
+        soot.SootMethod $r4;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: de.visuflow.reporting.IReporter;
+
+        $r3 = new soot.toolkits.graph.ExceptionalUnitGraph;
+
+        specialinvoke $r3.<soot.toolkits.graph.ExceptionalUnitGraph: void <init>(soot.Body)>(r1);
+
+        specialinvoke r0.<soot.toolkits.scalar.ForwardFlowAnalysis: void <init>(soot.toolkits.graph.DirectedGraph)>($r3);
+
+        r0.<de.visuflow.ex2.IntraproceduralAnalysis: int flowThroughCount> = 0;
+
+        $r4 = virtualinvoke r1.<soot.Body: soot.SootMethod getMethod()>();
+
+        r0.<de.visuflow.ex2.IntraproceduralAnalysis: soot.SootMethod method> = $r4;
+
+        r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.reporting.IReporter reporter> = r2;
+
+        return;
+    }
+
+    protected void flowThrough(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        java.util.HashSet $r5;
+        int $i0, $i1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $r5 = new java.util.HashSet;
+
+        specialinvoke $r5.<java.util.HashSet: void <init>()>();
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkGetSecret(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkTaintOverwrite(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkAssignmentOfTaintedLocal(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkAssignmentOfTaintedClassField(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkLeak(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkTaintedOperand(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, $r5);
+
+        virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void merge(java.util.Set,java.util.Set,java.util.Set)>(r1, $r5, r3);
+
+        $i0 = r0.<de.visuflow.ex2.IntraproceduralAnalysis: int flowThroughCount>;
+
+        $i1 = $i0 + 1;
+
+        r0.<de.visuflow.ex2.IntraproceduralAnalysis: int flowThroughCount> = $i1;
+
+        return;
+    }
+
+    private void checkAssignmentOfTaintedClassField(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6;
+        soot.jimple.FieldRef r7;
+        soot.SootClass r8;
+        boolean $z0, $z1, $z2, $z3, $z4;
+        soot.SootField $r9;
+        soot.tagkit.Tag $r10;
+        de.visuflow.ex2.IntraproceduralAnalysis$1 $r11;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label2;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        $z1 = r5 instanceof soot.Local;
+
+        if $z1 != 0 goto label1;
+
+        $z4 = r5 instanceof soot.jimple.FieldRef;
+
+        if $z4 == 0 goto label2;
+
+     label1:
+        $z2 = r6 instanceof soot.jimple.FieldRef;
+
+        if $z2 == 0 goto label2;
+
+        r7 = (soot.jimple.FieldRef) r6;
+
+        $r9 = interfaceinvoke r7.<soot.jimple.FieldRef: soot.SootField getField()>();
+
+        r8 = virtualinvoke $r9.<soot.SootField: soot.SootClass getDeclaringClass()>();
+
+        $z3 = virtualinvoke r8.<soot.SootClass: boolean hasTag(java.lang.String)>("Tainted");
+
+        if $z3 == 0 goto label2;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void taint(soot.Value,soot.Unit,java.util.Set)>(r5, r2, r3);
+
+        $r10 = virtualinvoke r8.<soot.SootClass: soot.tagkit.Tag getTag(java.lang.String)>("Tainted");
+
+        interfaceinvoke r2.<soot.Unit: void addTag(soot.tagkit.Tag)>($r10);
+
+        $r11 = new de.visuflow.ex2.IntraproceduralAnalysis$1;
+
+        specialinvoke $r11.<de.visuflow.ex2.IntraproceduralAnalysis$1: void <init>(de.visuflow.ex2.IntraproceduralAnalysis)>(r0);
+
+        interfaceinvoke r2.<soot.Unit: void addTag(soot.tagkit.Tag)>($r11);
+
+     label2:
+        return;
+    }
+
+    private void checkTaintedOperand(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkInstanceOf(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkLogicOperands(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkArithmeticOperands(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        return;
+    }
+
+    private void checkArithmeticOperands(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkBinaryOperation(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        return;
+    }
+
+    private void checkLogicOperands(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkBinaryOperation(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        return;
+    }
+
+    private void checkBinaryOperation(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6, $r10, $r11;
+        soot.jimple.internal.AbstractBinopExpr r7;
+        de.visuflow.ex2.FlowAbstraction r8, r9;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label2;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        $z1 = r5 instanceof soot.Local;
+
+        if $z1 == 0 goto label2;
+
+        $z2 = r6 instanceof soot.jimple.internal.AbstractBinopExpr;
+
+        if $z2 == 0 goto label2;
+
+        r7 = (soot.jimple.internal.AbstractBinopExpr) r6;
+
+        $r10 = virtualinvoke r7.<soot.jimple.internal.AbstractBinopExpr: soot.Value getOp1()>();
+
+        r8 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>($r10, r1);
+
+        $r11 = virtualinvoke r7.<soot.jimple.internal.AbstractBinopExpr: soot.Value getOp2()>();
+
+        r9 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>($r11, r1);
+
+        if r8 != null goto label1;
+
+        if r9 == null goto label2;
+
+     label1:
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void taint(soot.Value,soot.Unit,java.util.Set)>(r5, r2, r3);
+
+     label2:
+        return;
+    }
+
+    private void checkInstanceOf(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6, $r9;
+        soot.jimple.internal.AbstractInstanceOfExpr r7;
+        de.visuflow.ex2.FlowAbstraction r8;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label1;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        $z1 = r5 instanceof soot.Local;
+
+        if $z1 == 0 goto label1;
+
+        $z2 = r6 instanceof soot.jimple.internal.AbstractInstanceOfExpr;
+
+        if $z2 == 0 goto label1;
+
+        r7 = (soot.jimple.internal.AbstractInstanceOfExpr) r6;
+
+        $r9 = virtualinvoke r7.<soot.jimple.internal.AbstractInstanceOfExpr: soot.Value getOp()>();
+
+        r8 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>($r9, r1);
+
+        if r8 == null goto label1;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void taint(soot.Value,soot.Unit,java.util.Set)>(r5, r2, r3);
+
+     label1:
+        return;
+    }
+
+    private void checkLeak(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkParameterLeak(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void checkReturnLeak(java.util.Set,soot.Unit,java.util.Set)>(r1, r2, r3);
+
+        return;
+    }
+
+    private void checkReturnLeak(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2, r6;
+        soot.jimple.ReturnStmt r4;
+        de.visuflow.ex2.FlowAbstraction r5;
+        boolean $z0;
+        soot.Value $r7;
+        soot.SootMethod $r8;
+        de.visuflow.reporting.IReporter $r9;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.ReturnStmt;
+
+        if $z0 == 0 goto label1;
+
+        r4 = (soot.jimple.ReturnStmt) r2;
+
+        $r7 = interfaceinvoke r4.<soot.jimple.ReturnStmt: soot.Value getOp()>();
+
+        r5 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>($r7, r1);
+
+        if r5 == null goto label1;
+
+        r6 = virtualinvoke r5.<de.visuflow.ex2.FlowAbstraction: soot.Unit getSource()>();
+
+        $r9 = r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.reporting.IReporter reporter>;
+
+        $r8 = r0.<de.visuflow.ex2.IntraproceduralAnalysis: soot.SootMethod method>;
+
+        interfaceinvoke $r9.<de.visuflow.reporting.IReporter: void report(soot.SootMethod,soot.Unit,soot.Unit)>($r8, r6, r2);
+
+     label1:
+        return;
+    }
+
+    private void checkParameterLeak(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2, r9;
+        soot.jimple.Stmt r4;
+        soot.jimple.InvokeExpr r5, $r10;
+        soot.Value r6;
+        java.util.Iterator r7;
+        de.visuflow.ex2.FlowAbstraction r8;
+        boolean $z0, $z1, $z2;
+        int $i0;
+        java.util.List $r11;
+        java.lang.Object $r12;
+        soot.SootMethod $r13;
+        de.visuflow.reporting.IReporter $r14;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.Stmt;
+
+        if $z0 == 0 goto label3;
+
+        r4 = (soot.jimple.Stmt) r2;
+
+        $z1 = interfaceinvoke r4.<soot.jimple.Stmt: boolean containsInvokeExpr()>();
+
+        if $z1 == 0 goto label3;
+
+        $r10 = interfaceinvoke r4.<soot.jimple.Stmt: soot.jimple.InvokeExpr getInvokeExpr()>();
+
+        $i0 = interfaceinvoke $r10.<soot.jimple.InvokeExpr: int getArgCount()>();
+
+        if $i0 <= 0 goto label3;
+
+        r5 = interfaceinvoke r4.<soot.jimple.Stmt: soot.jimple.InvokeExpr getInvokeExpr()>();
+
+        $r11 = interfaceinvoke r5.<soot.jimple.InvokeExpr: java.util.List getArgs()>();
+
+        r7 = interfaceinvoke $r11.<java.util.List: java.util.Iterator iterator()>();
+
+        goto label2;
+
+     label1:
+        $r12 = interfaceinvoke r7.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (soot.Value) $r12;
+
+        r8 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>(r6, r1);
+
+        if r8 == null goto label2;
+
+        r9 = virtualinvoke r8.<de.visuflow.ex2.FlowAbstraction: soot.Unit getSource()>();
+
+        $r14 = r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.reporting.IReporter reporter>;
+
+        $r13 = r0.<de.visuflow.ex2.IntraproceduralAnalysis: soot.SootMethod method>;
+
+        interfaceinvoke $r14.<de.visuflow.reporting.IReporter: void report(soot.SootMethod,soot.Unit,soot.Unit)>($r13, r9, r2);
+
+     label2:
+        $z2 = interfaceinvoke r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z2 != 0 goto label1;
+
+     label3:
+        return;
+    }
+
+    private void checkAssignmentOfTaintedLocal(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6;
+        java.util.Iterator r7;
+        de.visuflow.ex2.FlowAbstraction r8;
+        boolean $z0, $z1, $z2, $z3, $z4, $z5;
+        java.lang.Object $r9;
+        soot.Local $r10;
+        de.visuflow.ex2.IntraproceduralAnalysis$Tainted $r11;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label4;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        $z1 = r5 instanceof soot.Local;
+
+        if $z1 != 0 goto label1;
+
+        $z4 = r5 instanceof soot.jimple.FieldRef;
+
+        if $z4 == 0 goto label4;
+
+     label1:
+        $z2 = r6 instanceof soot.Local;
+
+        if $z2 == 0 goto label4;
+
+        r7 = interfaceinvoke r1.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label3;
+
+     label2:
+        $r9 = interfaceinvoke r7.<java.util.Iterator: java.lang.Object next()>();
+
+        r8 = (de.visuflow.ex2.FlowAbstraction) $r9;
+
+        $r10 = virtualinvoke r8.<de.visuflow.ex2.FlowAbstraction: soot.Local getLocal()>();
+
+        $z3 = virtualinvoke $r10.<java.lang.Object: boolean equals(java.lang.Object)>(r6);
+
+        if $z3 == 0 goto label3;
+
+        $r11 = new de.visuflow.ex2.IntraproceduralAnalysis$Tainted;
+
+        specialinvoke $r11.<de.visuflow.ex2.IntraproceduralAnalysis$Tainted: void <init>(de.visuflow.ex2.IntraproceduralAnalysis,java.lang.String)>(r0, "assignment of tainted local");
+
+        interfaceinvoke r2.<soot.Unit: void addTag(soot.tagkit.Tag)>($r11);
+
+        specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void taint(soot.Value,soot.Unit,java.util.Set)>(r5, r2, r3);
+
+     label3:
+        $z5 = interfaceinvoke r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z5 != 0 goto label2;
+
+     label4:
+        return;
+    }
+
+    private void checkTaintOverwrite(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6;
+        soot.Local r7;
+        de.visuflow.ex2.FlowAbstraction r8;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label1;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        $z1 = r5 instanceof soot.Local;
+
+        if $z1 == 0 goto label1;
+
+        $z2 = r6 instanceof soot.jimple.Constant;
+
+        if $z2 == 0 goto label1;
+
+        interfaceinvoke r2.<soot.Unit: void removeTag(java.lang.String)>("Tainted");
+
+        r7 = (soot.Local) r5;
+
+        r8 = specialinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object,java.util.Set)>(r7, r1);
+
+        if r8 == null goto label1;
+
+        interfaceinvoke r1.<java.util.Set: boolean remove(java.lang.Object)>(r8);
+
+     label1:
+        return;
+    }
+
+    private void checkGetSecret(java.util.Set, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+        soot.jimple.internal.AbstractDefinitionStmt r4;
+        soot.Value r5, r6;
+        soot.jimple.InvokeExpr r7;
+        java.lang.String r8;
+        boolean $z0, $z1, $z2, $z3;
+        soot.SootMethod $r9;
+        de.visuflow.ex2.FlowAbstraction $r10;
+        soot.Local $r11;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r2 instanceof soot.jimple.internal.AbstractDefinitionStmt;
+
+        if $z0 == 0 goto label1;
+
+        r4 = (soot.jimple.internal.AbstractDefinitionStmt) r2;
+
+        r5 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getRightOp()>();
+
+        r6 = virtualinvoke r4.<soot.jimple.internal.AbstractDefinitionStmt: soot.Value getLeftOp()>();
+
+        $z1 = r6 instanceof soot.Local;
+
+        if $z1 == 0 goto label1;
+
+        $z2 = r5 instanceof soot.jimple.InvokeExpr;
+
+        if $z2 == 0 goto label1;
+
+        r7 = (soot.jimple.InvokeExpr) r5;
+
+        $r9 = interfaceinvoke r7.<soot.jimple.InvokeExpr: soot.SootMethod getMethod()>();
+
+        r8 = virtualinvoke $r9.<soot.SootMethod: java.lang.String getName()>();
+
+        $z3 = virtualinvoke r8.<java.lang.String: boolean contains(java.lang.CharSequence)>("getSecret");
+
+        if $z3 == 0 goto label1;
+
+        $r10 = new de.visuflow.ex2.FlowAbstraction;
+
+        $r11 = (soot.Local) r6;
+
+        specialinvoke $r10.<de.visuflow.ex2.FlowAbstraction: void <init>(soot.Unit,soot.Local)>(r2, $r11);
+
+        interfaceinvoke r3.<java.util.Set: boolean add(java.lang.Object)>($r10);
+
+     label1:
+        return;
+    }
+
+    private void taint(soot.Value, soot.Unit, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        soot.Value r1;
+        soot.Unit r2;
+        java.util.Set r3;
+        soot.jimple.FieldRef r4;
+        boolean $z0;
+        soot.SootField $r5, $r9, $r15;
+        soot.SootClass $r6;
+        de.visuflow.ex2.IntraproceduralAnalysis$Tainted $r7;
+        java.lang.StringBuilder $r8, $r11, $r12;
+        java.lang.String $r10, $r13;
+        de.visuflow.ex2.FlowAbstraction $r14, $r16;
+        soot.Local $r17;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: soot.Value;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        $z0 = r1 instanceof soot.Local;
+
+        if $z0 == 0 goto label1;
+
+        $r16 = new de.visuflow.ex2.FlowAbstraction;
+
+        $r17 = (soot.Local) r1;
+
+        specialinvoke $r16.<de.visuflow.ex2.FlowAbstraction: void <init>(soot.Unit,soot.Local)>(r2, $r17);
+
+        interfaceinvoke r3.<java.util.Set: boolean add(java.lang.Object)>($r16);
+
+        goto label2;
+
+     label1:
+        r4 = (soot.jimple.FieldRef) r1;
+
+        $r5 = interfaceinvoke r4.<soot.jimple.FieldRef: soot.SootField getField()>();
+
+        $r6 = virtualinvoke $r5.<soot.SootField: soot.SootClass getDeclaringClass()>();
+
+        $r7 = new de.visuflow.ex2.IntraproceduralAnalysis$Tainted;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("class contains tainted field [");
+
+        $r9 = interfaceinvoke r4.<soot.jimple.FieldRef: soot.SootField getField()>();
+
+        $r10 = virtualinvoke $r9.<soot.SootField: java.lang.String getName()>();
+
+        $r11 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r12 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r13 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<de.visuflow.ex2.IntraproceduralAnalysis$Tainted: void <init>(de.visuflow.ex2.IntraproceduralAnalysis,java.lang.String)>(r0, $r13);
+
+        virtualinvoke $r6.<soot.SootClass: void addTag(soot.tagkit.Tag)>($r7);
+
+        $r14 = new de.visuflow.ex2.FlowAbstraction;
+
+        $r15 = interfaceinvoke r4.<soot.jimple.FieldRef: soot.SootField getField()>();
+
+        specialinvoke $r14.<de.visuflow.ex2.FlowAbstraction: void <init>(soot.Unit,soot.SootField)>(r2, $r15);
+
+        interfaceinvoke r3.<java.util.Set: boolean add(java.lang.Object)>($r14);
+
+     label2:
+        return;
+    }
+
+    private de.visuflow.ex2.FlowAbstraction isInTaintedSet(java.lang.Object, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.lang.Object r1, $r6;
+        java.util.Set r2;
+        java.util.Iterator r3;
+        de.visuflow.ex2.FlowAbstraction r4;
+        soot.SootField r5, $r8, $r9;
+        boolean $z0, $z1, $z2, $z3, $z4;
+        soot.jimple.FieldRef $r7;
+        soot.Local $r10, $r11;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.util.Set;
+
+        r3 = interfaceinvoke r2.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label3;
+
+     label1:
+        $r6 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (de.visuflow.ex2.FlowAbstraction) $r6;
+
+        $z0 = r1 instanceof soot.Local;
+
+        if $z0 == 0 goto label2;
+
+        $r10 = virtualinvoke r4.<de.visuflow.ex2.FlowAbstraction: soot.Local getLocal()>();
+
+        if $r10 == null goto label3;
+
+        $r11 = virtualinvoke r4.<de.visuflow.ex2.FlowAbstraction: soot.Local getLocal()>();
+
+        $z3 = virtualinvoke $r11.<java.lang.Object: boolean equals(java.lang.Object)>(r1);
+
+        if $z3 == 0 goto label3;
+
+        return r4;
+
+     label2:
+        $z1 = r1 instanceof soot.jimple.FieldRef;
+
+        if $z1 == 0 goto label3;
+
+        $r7 = (soot.jimple.FieldRef) r1;
+
+        r5 = interfaceinvoke $r7.<soot.jimple.FieldRef: soot.SootField getField()>();
+
+        $r8 = virtualinvoke r4.<de.visuflow.ex2.FlowAbstraction: soot.SootField getField()>();
+
+        if $r8 == null goto label3;
+
+        $r9 = virtualinvoke r4.<de.visuflow.ex2.FlowAbstraction: soot.SootField getField()>();
+
+        $z2 = virtualinvoke $r9.<java.lang.Object: boolean equals(java.lang.Object)>(r5);
+
+        if $z2 == 0 goto label3;
+
+        return r4;
+
+     label3:
+        $z4 = interfaceinvoke r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z4 != 0 goto label1;
+
+        return null;
+    }
+
+    protected java.util.Set newInitialFlow()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.HashSet $r1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        $r1 = new java.util.HashSet;
+
+        specialinvoke $r1.<java.util.HashSet: void <init>()>();
+
+        return $r1;
+    }
+
+    protected java.util.Set entryInitialFlow()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.HashSet $r1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        $r1 = new java.util.HashSet;
+
+        specialinvoke $r1.<java.util.HashSet: void <init>()>();
+
+        return $r1;
+    }
+
+    protected void merge(java.util.Set, java.util.Set, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r2, r3;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: java.util.Set;
+
+        r3 := @parameter2: java.util.Set;
+
+        interfaceinvoke r3.<java.util.Set: boolean addAll(java.util.Collection)>(r1);
+
+        interfaceinvoke r3.<java.util.Set: boolean addAll(java.util.Collection)>(r2);
+
+        return;
+    }
+
+    protected void copy(java.util.Set, java.util.Set)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set r1, r2;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: java.util.Set;
+
+        interfaceinvoke r2.<java.util.Set: void clear()>();
+
+        interfaceinvoke r2.<java.util.Set: boolean addAll(java.util.Collection)>(r1);
+
+        return;
+    }
+
+    public void doAnalyis()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        specialinvoke r0.<soot.toolkits.scalar.ForwardFlowAnalysis: void doAnalysis()>();
+
+        return;
+    }
+
+    protected volatile java.lang.Object entryInitialFlow()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set $r1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        $r1 = virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: java.util.Set entryInitialFlow()>();
+
+        return $r1;
+    }
+
+    protected volatile void copy(java.lang.Object, java.lang.Object)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.lang.Object r1, r2;
+        java.util.Set $r3, $r4;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        $r4 = (java.util.Set) r1;
+
+        $r3 = (java.util.Set) r2;
+
+        virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void copy(java.util.Set,java.util.Set)>($r4, $r3);
+
+        return;
+    }
+
+    protected volatile java.lang.Object newInitialFlow()
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.util.Set $r1;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        $r1 = virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: java.util.Set newInitialFlow()>();
+
+        return $r1;
+    }
+
+    protected volatile void flowThrough(java.lang.Object, java.lang.Object, java.lang.Object)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.lang.Object r1, r2, r3;
+        java.util.Set $r4, $r6;
+        soot.Unit $r5;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r6 = (java.util.Set) r1;
+
+        $r5 = (soot.Unit) r2;
+
+        $r4 = (java.util.Set) r3;
+
+        virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void flowThrough(java.util.Set,soot.Unit,java.util.Set)>($r6, $r5, $r4);
+
+        return;
+    }
+
+    protected volatile void merge(java.lang.Object, java.lang.Object, java.lang.Object)
+    {
+        de.visuflow.ex2.IntraproceduralAnalysis r0;
+        java.lang.Object r1, r2, r3;
+        java.util.Set $r4, $r5, $r6;
+
+        r0 := @this: de.visuflow.ex2.IntraproceduralAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r6 = (java.util.Set) r1;
+
+        $r5 = (java.util.Set) r2;
+
+        $r4 = (java.util.Set) r3;
+
+        virtualinvoke r0.<de.visuflow.ex2.IntraproceduralAnalysis: void merge(java.util.Set,java.util.Set,java.util.Set)>($r6, $r5, $r4);
+
+        return;
+    }
+}
