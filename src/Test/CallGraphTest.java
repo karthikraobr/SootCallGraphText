@@ -35,7 +35,6 @@ public class CallGraphTest {
 				Scene.v().getClasses().forEach((cls)->{
 					cls.getMethods().forEach((mtd)->{
 						if(mtd.getName().equals("flowThrough")) {
-							System.out.println("Inside flowthrough");
 							System.out.println(mtd.retrieveActiveBody());
 							iteratre(mtd, Scene.v().getCallGraph());
 						}
